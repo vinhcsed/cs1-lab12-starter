@@ -1,39 +1,144 @@
-#include <iostream>
+#include <sstream>
 #include <iomanip>
-#include <fstream>
-#include <string>
-#include "soda.h"
-using namespace std;
+#include "deck.h"
 
-/***** Function Prototypes (Optional) *****/
-/* Reads from inventory.txt and retrieves the number of soda varieties;
-   takes an input filestream as an argument;
-   returns the number of soda varieties */
-// int getNumberOfSodas(fstream&);
+void assertTrue(string testName, bool assertion) {
+    string title = "Test ";
+    title += testName;
+    cout << setw(21) << title;
+    if(assertion) { cout << ": PASSED" << endl; } 
+    else { cout << ": FAILED" << endl; }
+}
 
-/* Reads from inventory.txt and dynamically allocates an array of Soda;
-   takes an input filestream and the number of soda varieties as arguments;
-   returns the initialized array */
-// Soda* readInventory(fstream&, int);
+void testBasicDeck() {
+    cout << "BASIC TEST" << endl;
+    Deck deck;
+    ostringstream oss;
+    
+    oss << deck;
+    assertTrue(
+        "Constructor",
+        oss.str() ==
+        "[AC, AD, AH, AS, 2C, 2D, 2H, 2S, 3C, 3D, 3H, 3S, 4C, 4D, 4H, 4S, 5C, 5D, 5H, 5S, 6C, 6D, 6H, 6S, 7C, 7D, 7H, 7S, 8C, 8D, 8H, 8S, 9C, 9D, 9H, 9S, 10C, 10D, 10H, 10S, JC, JD, JH, JS, QC, QD, QH, QS, KC, KD, KH, KS]"
+    );
+    assertTrue(
+        "size",
+        deck.getSize() == MAX_CARDS
+    );
+    assertTrue(
+        "isEmpty",
+        !deck.isEmpty()
+    );
+    Card p = deck.peek();
+    assertTrue(
+        "peek",
+        p.rank == ACE && p.suit == 'C'
+    );
+}
 
-/* Displays choices in required format;
-   takes the Soda array and its size as arguments */
-// void displayChoices(Soda*, int);
+void testCopy() {
+    cout << "COPY TEST" << endl;
+    Deck original;
+    ostringstream d1, d2;
 
-/* Gets user choice and continuously prompts until valid; 
-   takes the size of the Soda array as an argument;
-   returns the selection */
-// int getSelection(int);
+    original.draw();
+    original.draw();
+    original.shuffle();
+    Deck duplicate(original);
+    
+    d1 << original; d2 << duplicate;
+    assertTrue(
+        "Copy Constructor",
+        d1.str() == d2.str()
+    );
+    assertTrue(
+        "size original",
+        original.getSize() == 50
+    );
+    assertTrue(
+        "size duplicate",
+        duplicate.getSize() == 50
+    );
+    Card p1 = original.peek();
+    Card p2 = duplicate.peek();
+    assertTrue(
+        "peek",
+        p1.rank == p2.rank && p1.suit == p2.suit
+    );
+    p1 = original.draw();
+    p2 = duplicate.draw();
+    assertTrue(
+        "draw",
+        p1.rank == p2.rank && p1.suit == p2.suit
+    );
+    d1.clear();
+    d2.clear();
+    d1 << original; d2 << duplicate;
+    assertTrue(
+        "output",
+        d1.str() == d2.str()
+    );
+}
 
-/* Gets user payment and continuously prompts until valid;
-   takes the Soda array and a selection number as arguments;
-   modifies the array and returns the appropriate amount of change */
-// double purchase(Soda*, int);
+void testEmpty() {
+    cout << "EMPTY TEST" << endl;
+    Deck deck;
+    ostringstream d;
 
-/* Writes the remaining inventory to inventory.txt;
-   takes an output filestream, the Soda array, and its size as arguments */
-// void writeInventory(fstream&, Soda*, int);
+    for(int _ = 0; _ < MAX_CARDS; _++) {
+        deck.draw();
+    } 
+    assertTrue(
+        "isEmpty",
+        deck.isEmpty()
+    );
+    assertTrue(
+        "size empty",
+        deck.getSize() == 0
+    );
+    deck.addTop({ACE, 'S'});
+    d << deck;
+    assertTrue(
+        "output",
+        d.str() == "[AS]"
+    );
+    assertTrue(
+        "size one",
+        deck.getSize() == 1
+    );
+}
 
-int main() { 
-  return 0;
+void testClear() {
+    cout << "CLEAR TEST" << endl;
+    Deck deck;
+    ostringstream d;
+
+    deck.clear();
+    assertTrue(
+        "clear",
+        deck.isEmpty()
+    );
+    assertTrue(
+        "size empty",
+        deck.getSize() == 0
+    );
+    deck.addTop({KING, 'H'});
+    d << deck;
+    assertTrue(
+        "output",
+        d.str() == "[KH]"
+    );
+    assertTrue(
+        "size one",
+        deck.getSize() == 1
+    );
+}
+
+int main() {
+    srand(time(0));
+    testBasicDeck();
+    testCopy();
+    testEmpty();
+    testClear();
+    return 0;
 }
