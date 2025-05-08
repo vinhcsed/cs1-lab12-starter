@@ -28,6 +28,10 @@ class Deck {
             copies another Deck */
         Deck(const Deck&);
 
+        /* Assignment Operator
+            copies to another Deck */
+        void operator=(const Deck&);
+
         /* bool Deck::isEmpty
             returns true if the Deck contains no cards, otherwise false */
         bool isEmpty() const;
