@@ -80,6 +80,50 @@ void testCopy() {
     );
 }
 
+void testAssignment() {
+    cout << "ASSIGN TEST" << endl;
+    Deck original;
+    ostringstream d1, d2;
+
+    original.draw();
+    original.draw();
+    original.shuffle();
+    Deck duplicate = original;
+    
+    d1 << original; d2 << duplicate;
+    assertTrue(
+        "Copy Constructor",
+        d1.str() == d2.str()
+    );
+    assertTrue(
+        "size original",
+        original.getSize() == 50
+    );
+    assertTrue(
+        "size duplicate",
+        duplicate.getSize() == 50
+    );
+    Card p1 = original.peek();
+    Card p2 = duplicate.peek();
+    assertTrue(
+        "peek",
+        p1.rank == p2.rank && p1.suit == p2.suit
+    );
+    p1 = original.draw();
+    p2 = duplicate.draw();
+    assertTrue(
+        "draw",
+        p1.rank == p2.rank && p1.suit == p2.suit
+    );
+    d1.clear();
+    d2.clear();
+    d1 << original; d2 << duplicate;
+    assertTrue(
+        "output",
+        d1.str() == d2.str()
+    );
+}
+
 void testEmpty() {
     cout << "EMPTY TEST" << endl;
     Deck deck;
@@ -138,6 +182,7 @@ int main() {
     srand(time(0));
     testBasicDeck();
     testCopy();
+    testAssignment();
     testEmpty();
     testClear();
     return 0;
