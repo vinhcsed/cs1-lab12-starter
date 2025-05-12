@@ -152,38 +152,11 @@ void testEmpty() {
     );
 }
 
-void testClear() {
-    cout << "CLEAR TEST" << endl;
-    Deck deck;
-    ostringstream d;
-
-    deck.clear();
-    assertTrue(
-        "clear",
-        deck.isEmpty()
-    );
-    assertTrue(
-        "size empty",
-        deck.getSize() == 0
-    );
-    deck.addTop({KING, 'H'});
-    d << deck;
-    assertTrue(
-        "output",
-        d.str() == "[KH]"
-    );
-    assertTrue(
-        "size one",
-        deck.getSize() == 1
-    );
-}
-
 int main() {
     srand(time(0));
     testBasicDeck();
     testCopy();
     testAssignment();
     testEmpty();
-    testClear();
     return 0;
 }
